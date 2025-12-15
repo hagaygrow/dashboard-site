@@ -1,65 +1,175 @@
-<!DOCTYPE html>
-<html lang="he">
-<head>
-  <meta charset="UTF-8" />
-  <title>Dashboard</title>
-</head>
+<style>
+  :root{
+    /* 🎯 Brand / NOC colors */
+    --bg: #121065;
+    --panel: rgba(255,255,255,0.06);
+    --panel2: rgba(255,255,255,0.10);
+    --text: #ffffff;
+    --muted: rgba(255,255,255,0.7);
+    --line: rgba(255,255,255,0.14);
 
-<body>
+    /* Status colors */
+    --good: #3cffb0;
+    --warn: #ffd84d;
+    --bad:  #ff6b6b;
 
-  <!-- 🔐 חסימה אם לא מגיעים דרך הדומיין הרשמי -->
-  <script>
-    if (location.hostname !== "dashboard.3144.info") {
-      document.body.innerHTML = "";
-      throw new Error("Blocked: invalid host");
-    }
-  </script>
+    /* Accent (Grow light) */
+    --accent: #ECEBFE;
+  }
 
-  <h1>דשבורד בדיקה</h1>
+  *{ box-sizing: border-box; }
 
-  <p>הכנסות: <span id="revenue">טוען…</span></p>
-  <p>משתמשים פעילים: <span id="users">טוען…</span></p>
-  <p>יחס המרה: <span id="conversion">טוען…</span>%</p>
-  <p>עודכן לאחרונה: <span id="updated">טוען…</span></p>
+  body{
+    margin:0;
+    background:
+      radial-gradient(1100px 600px at 80% 10%, rgba(236,235,254,0.12), transparent 60%),
+      radial-gradient(900px 600px at 20% 90%, rgba(236,235,254,0.08), transparent 55%),
+      var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  }
 
-  <pre id="status" style="white-space: pre-wrap; background:#f6f6f6; padding:10px;"></pre>
+  .wrap{
+    padding: 28px;
+    min-height: 100vh;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    gap: 18px;
+  }
 
-  <script>
-    // 📄 קריאה לנתונים מאותו דומיין (מאובטח ע"י Cloudflare)
-    const URL = "/latest.json?v=" + Date.now();
+  header{
+    display:flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+  }
 
-    async function load() {
-      const statusEl = document.getElementById("status");
-      statusEl.textContent = "טוען נתונים מ:\n" + URL + "\n\n";
+  .title{
+    display:flex;
+    align-items:center;
+    gap: 14px;
+  }
 
-      try {
-        const res = await fetch(URL, { cache: "no-store" });
-        statusEl.textContent += "HTTP Status: " + res.status + "\n";
+  .badge{
+    font-weight: 700;
+    letter-spacing: .3px;
+    color: #121065;
+    background: var(--accent);
+    border-radius: 999px;
+    padding: 6px 14px;
+    font-size: 14px;
+  }
 
-        const text = await res.text();
+  h1{
+    margin:0;
+    font-size: 36px;
+    line-height: 1.1;
+  }
 
-        let data;
-        try {
-          data = JSON.parse(text);
-        } catch {
-          statusEl.textContent += "\n❌ JSON לא תקין:\n" + text.slice(0, 300);
-          return;
-        }
+  .meta{
+    color: var(--muted);
+    font-size: 14px;
+    text-align:left;
+  }
 
-        document.getElementById("revenue").innerText = data.revenue ?? "—";
-        document.getElementById("users").innerText = data.activeUsers ?? "—";
-        document.getElementById("conversion").innerText = data.conversionRate ?? "—";
-        document.getElementById("updated").innerText = data.updatedAt ?? "—";
+  .grid{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
 
-        statusEl.textContent += "\n✅ עודכן בהצלחה";
-      } catch (e) {
-        statusEl.textContent += "\n❌ שגיאת רשת:\n" + e.message;
-        console.error(e);
-      }
-    }
+  .card{
+    background: linear-gradient(
+      180deg,
+      rgba(255,255,255,0.10),
+      rgba(255,255,255,0.04)
+    );
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 18px 20px 20px;
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.08),
+      0 10px 30px rgba(0,0,0,0.25);
+  }
 
-    load();
-  </script>
+  .card h2{
+    margin:0 0 12px 0;
+    font-size: 22px;
+    color: var(--text);
+    display:flex;
+    justify-content: space-between;
+    align-items:center;
+  }
 
-</body>
-</html>
+  .sub{
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  table{
+    width:100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 18px; /* קריא מרחוק */
+  }
+
+  th, td{
+    padding: 12px 10px;
+    border-bottom: 1px solid var(--line);
+    white-space: nowrap;
+  }
+
+  th{
+    color: rgba(255,255,255,0.75);
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  td.type{ width: 50%; }
+  td.count, th.count{ width: 120px; text-align:left; }
+  td.amount, th.amount{ text-align:left; }
+
+  tr:last-child td{
+    border-bottom: none;
+  }
+
+  .row-hi{
+    background: rgba(236,235,254,0.12);
+    border-radius: 10px;
+  }
+
+  .totals{
+    display:flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+  }
+
+  .pill{
+    background: var(--panel2);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 10px 16px;
+    font-size: 16px;
+    color: var(--text);
+  }
+
+  .pill span{
+    color: var(--muted);
+    margin-inline-end: 8px;
+  }
+
+  footer{
+    display:flex;
+    justify-content: space-between;
+    align-items:center;
+    color: var(--muted);
+    font-size: 13px;
+    gap: 10px;
+    border-top: 1px solid var(--line);
+    padding-top: 14px;
+  }
+
+  .status.ok{ color: var(--good); }
+  .status.err{ color: var(--bad); }
+</style>
