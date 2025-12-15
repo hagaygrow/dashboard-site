@@ -5,7 +5,174 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Grow • NOC — דוח עסקאות לפי סוג</title>
 
-  <!-- השאר כאן את ה-STYLE שלך כמו ששלחת -->
+  <style>
+    :root{
+      --bg: #121065;
+      --panel: rgba(255,255,255,0.06);
+      --panel2: rgba(255,255,255,0.10);
+      --text: #ffffff;
+      --muted: rgba(255,255,255,0.7);
+      --line: rgba(255,255,255,0.14);
+
+      --good: #3cffb0;
+      --warn: #ffd84d;
+      --bad:  #ff6b6b;
+
+      --accent: #ECEBFE;
+    }
+
+    *{ box-sizing: border-box; }
+
+    body{
+      margin:0;
+      background:
+        radial-gradient(1100px 600px at 80% 10%, rgba(236,235,254,0.12), transparent 60%),
+        radial-gradient(900px 600px at 20% 90%, rgba(236,235,254,0.08), transparent 55%),
+        var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+    }
+
+    .wrap{
+      padding: 28px;
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 18px;
+    }
+
+    header{
+      display:flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .title{
+      display:flex;
+      align-items:center;
+      gap: 14px;
+    }
+
+    .badge{
+      font-weight: 700;
+      letter-spacing: .3px;
+      color: #121065;
+      background: var(--accent);
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-size: 14px;
+    }
+
+    h1{
+      margin:0;
+      font-size: 36px;
+      line-height: 1.1;
+    }
+
+    .meta{
+      color: var(--muted);
+      font-size: 14px;
+      text-align:left;
+      display:flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .card{
+      background: linear-gradient(
+        180deg,
+        rgba(255,255,255,0.10),
+        rgba(255,255,255,0.04)
+      );
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px 20px 20px;
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.08),
+        0 10px 30px rgba(0,0,0,0.25);
+    }
+
+    .card h2{
+      margin:0 0 12px 0;
+      font-size: 22px;
+      color: var(--text);
+      display:flex;
+      justify-content: space-between;
+      align-items:center;
+    }
+
+    .sub{
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    table{
+      width:100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 18px;
+    }
+
+    th, td{
+      padding: 12px 10px;
+      border-bottom: 1px solid var(--line);
+      white-space: nowrap;
+    }
+
+    th{
+      color: rgba(255,255,255,0.75);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    td.type{ width: 50%; }
+    td.count, th.count{ width: 120px; text-align:left; }
+    td.amount, th.amount{ text-align:left; }
+
+    tr:last-child td{ border-bottom: none; }
+
+    .totals{
+      display:flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+
+    .pill{
+      background: var(--panel2);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 10px 16px;
+      font-size: 16px;
+      color: var(--text);
+    }
+
+    .pill span{
+      color: var(--muted);
+      margin-inline-end: 8px;
+    }
+
+    footer{
+      display:flex;
+      justify-content: space-between;
+      align-items:center;
+      color: var(--muted);
+      font-size: 13px;
+      gap: 10px;
+      border-top: 1px solid var(--line);
+      padding-top: 14px;
+    }
+
+    .status.ok{ color: var(--good); }
+    .status.err{ color: var(--bad); }
+  </style>
 </head>
 
 <body>
@@ -22,13 +189,8 @@
     </header>
 
     <main class="grid">
-      <!-- TODAY -->
       <section class="card">
-        <h2>
-          <span>מהיום (Today)</span>
-          <span class="sub">Start of day</span>
-        </h2>
-
+        <h2><span>מהיום (Today)</span><span class="sub">Start of day</span></h2>
         <table>
           <thead>
             <tr>
@@ -41,20 +203,14 @@
             <tr><td colspan="3" class="sub">אין נתונים</td></tr>
           </tbody>
         </table>
-
         <div class="totals">
           <div class="pill"><span>סה״כ כמות:</span><b id="todayTotalCount">—</b></div>
           <div class="pill"><span>סה״כ סכום:</span><b id="todayTotalAmount">—</b></div>
         </div>
       </section>
 
-      <!-- MONTH -->
       <section class="card">
-        <h2>
-          <span>מהחודש (MTD)</span>
-          <span class="sub">Start of month</span>
-        </h2>
-
+        <h2><span>מהחודש (MTD)</span><span class="sub">Start of month</span></h2>
         <table>
           <thead>
             <tr>
@@ -67,7 +223,6 @@
             <tr><td colspan="3" class="sub">אין נתונים</td></tr>
           </tbody>
         </table>
-
         <div class="totals">
           <div class="pill"><span>סה״כ כמות:</span><b id="monthTotalCount">—</b></div>
           <div class="pill"><span>סה״כ סכום:</span><b id="monthTotalAmount">—</b></div>
@@ -82,7 +237,6 @@
   </div>
 
   <script>
-    // ✅ הגנה על Host (שלא יציג אם זה לא הדומיין שלך)
     if (location.hostname !== "dashboard.3144.info") {
       document.body.innerHTML = "";
       throw new Error("Blocked: invalid host");
@@ -96,9 +250,8 @@
       return new Intl.NumberFormat("he-IL").format(n);
     }
 
-    function fmtCurrency(n) {
+    function fmtAmount(n) {
       if (n === null || n === undefined || Number.isNaN(n)) return "—";
-      // אם אתה רוצה ש"ח:
       return new Intl.NumberFormat("he-IL").format(n);
     }
 
@@ -127,13 +280,13 @@
           <tr>
             <td class="type">${type}</td>
             <td class="count">${fmtNumber(count)}</td>
-            <td class="amount">${fmtCurrency(amount)}</td>
+            <td class="amount">${fmtAmount(amount)}</td>
           </tr>
         `;
       }).join("");
 
       document.getElementById(totalCountId).textContent = fmtNumber(totalCount);
-      document.getElementById(totalAmountId).textContent = fmtCurrency(totalAmount);
+      document.getElementById(totalAmountId).textContent = fmtAmount(totalAmount);
     }
 
     async function load() {
@@ -161,7 +314,6 @@
         statusEl.className = "status ok";
       } catch (e) {
         console.error(e);
-        const statusEl = document.getElementById("status");
         statusEl.textContent = "שגיאה בטעינת נתונים ❌ (" + e.message + ")";
         statusEl.className = "status err";
       }
