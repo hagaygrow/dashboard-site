@@ -7,451 +7,300 @@
 
   <style>
     :root{
-      /* 🎯 Brand / NOC colors */
-      --bg: #121065;
-      --panel: rgba(255,255,255,0.06);
-      --panel2: rgba(255,255,255,0.10);
-      --text: #ffffff;
-      --muted: rgba(255,255,255,0.7);
-      --line: rgba(255,255,255,0.14);
-
-      /* Status colors */
-      --good: #3cffb0;
-      --warn: #ffd84d;
-      --bad:  #ff6b6b;
-
-      /* Accent (Grow light) */
-      --accent: #ECEBFE;
+      --bg:#121065;
+      --panel:rgba(255,255,255,.06);
+      --panel2:rgba(255,255,255,.12);
+      --text:#fff;
+      --muted:rgba(255,255,255,.7);
+      --line:rgba(255,255,255,.14);
+      --accent:#ECEBFE;
+      --good:#3cffb0;
+      --bad:#ff6b6b;
     }
 
-    *{ box-sizing: border-box; }
+    *{box-sizing:border-box}
 
     body{
       margin:0;
+      font-family:system-ui,-apple-system,"Segoe UI",Arial;
+      color:var(--text);
       background:
-        radial-gradient(1100px 600px at 80% 10%, rgba(236,235,254,0.12), transparent 60%),
-        radial-gradient(900px 600px at 20% 90%, rgba(236,235,254,0.08), transparent 55%),
+        radial-gradient(1100px 600px at 80% 10%, rgba(236,235,254,.12), transparent 60%),
+        radial-gradient(900px 600px at 20% 90%, rgba(236,235,254,.08), transparent 55%),
         var(--bg);
-      color: var(--text);
-      font-family: system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
     }
 
     .wrap{
-      padding: 28px;
-      min-height: 100vh;
-      display: grid;
-      grid-template-rows: auto 1fr auto;
-      gap: 18px;
+      min-height:100vh;
+      padding:28px;
+      display:grid;
+      grid-template-rows:auto 1fr auto;
+      gap:18px;
     }
 
     header{
       display:flex;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 16px;
+      justify-content:space-between;
+      align-items:flex-end;
     }
 
     .title{
       display:flex;
       align-items:center;
-      gap: 14px;
-    }
-
-    .badge{
-      font-weight: 800;
-      letter-spacing: .3px;
-      color: #121065;
-      background: var(--accent);
-      border-radius: 999px;
-      padding: 6px 14px;
-      font-size: 14px;
+      gap:14px;
     }
 
     h1{
       margin:0;
-      font-size: 36px;
-      line-height: 1.1;
+      font-size:36px;
+    }
+
+    .badge{
+      background:var(--accent);
+      color:#121065;
+      padding:6px 14px;
+      border-radius:999px;
+      font-weight:800;
+      font-size:14px;
     }
 
     .meta{
-      color: var(--muted);
-      font-size: 14px;
       text-align:left;
+      font-size:14px;
+      color:var(--muted);
       display:flex;
-      flex-direction: column;
-      gap: 6px;
-      align-items: flex-start;
+      flex-direction:column;
+      gap:6px;
     }
 
-    .status.ok{ color: var(--good); }
-    .status.err{ color: var(--bad); }
+    .status.ok{color:var(--good)}
+    .status.err{color:var(--bad)}
 
     .grid{
       display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 18px;
-      align-items: stretch;
+      grid-template-columns:1fr 1fr;
+      gap:18px;
     }
 
     .card{
-      background: linear-gradient(
-        180deg,
-        rgba(255,255,255,0.10),
-        rgba(255,255,255,0.04)
-      );
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      padding: 18px 20px 20px;
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,0.08),
-        0 10px 30px rgba(0,0,0,0.25);
-      overflow: hidden;
+      background:linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,.04));
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:20px;
+      box-shadow:0 10px 30px rgba(0,0,0,.25);
     }
 
     .card h2{
       margin:0 0 12px 0;
-      font-size: 22px;
-      color: var(--text);
       display:flex;
-      justify-content: space-between;
-      align-items:center;
-      gap: 10px;
+      justify-content:space-between;
+      font-size:22px;
     }
 
-    .sub{
-      color: var(--muted);
-      font-size: 13px;
+    .sub{color:var(--muted);font-size:13px}
+
+    /* ===== TABLE ===== */
+    table{
+      width:100%;
+      border-collapse:collapse;
+      margin-top:14px;
+      font-size:18px;
     }
 
-   table{
-  width:100%;
-  border-collapse: collapse;
-  margin-top: 14px;
-  font-size: 18px;
-}
-
-
-    /* ✅ Header חזק וברור */
-   thead tr{
-  background: rgba(236,235,254,0.10);
-}
-thead th{
-  /* 🔥 Bigger + clearer headers */
-  font-size: 20px;
-  font-weight: 900;
-  color: #FFFFFF;
-  padding: 16px 10px;
-  border-bottom: 2px solid rgba(236,235,254,0.55);
-  letter-spacing: 0.3px;
-  text-transform: none;
-  text-shadow: 0 2px 12px rgba(0,0,0,0.35);
-}
-    /* עוזר להפריד ויזואלית בין header ל-data */
-tbody td{
-  padding: 14px 10px;
-}
-
-/* ✅ יישור הכותרות כמו התוכן */
-th.type, td.type{
-  text-align: right;
-  padding-right: 18px;
-  width: 48%;
-}
-
-th.count, td.count{
-  text-align: left;
-  width: 20%;
-}
-
-th.amount, td.amount{
-  text-align: left;
-  width: 32%;
-}
-
-  tbody td{
-  padding: 14px 10px;
-  border-bottom: 1px solid var(--line);
-  white-space: nowrap;
-}
-
-    tr:last-child td{
-      border-bottom: none;
+    thead tr{
+      background:rgba(236,235,254,.12);
     }
 
-    /* ✅ יישור נכון לכותרת "סוג" ולערכים */
-    th.type, td.type{
-      text-align: right;
-      padding-right: 18px;
-      width: 48%;
+    thead th{
+      font-size:20px;
+      font-weight:900;
+      padding:16px 12px;
+      border-bottom:2px solid rgba(236,235,254,.55);
+      text-shadow:0 2px 12px rgba(0,0,0,.35);
     }
 
-    th.count, td.count{
-      text-align: left;
-      width: 20%;
+    tbody td{
+      padding:14px 12px;
+      border-bottom:1px solid var(--line);
     }
 
-    th.amount, td.amount{
-      text-align: left;
-      width: 32%;
-    }
+    tbody tr:last-child td{border-bottom:none}
 
-    /* שורה מודגשת (אם תרצה לסמן "סה״כ") */
+    th.type,td.type{width:48%;text-align:right;padding-right:18px}
+    th.count,td.count{width:20%;text-align:left}
+    th.amount,td.amount{width:32%;text-align:left}
+
     tr.total-row{
-      background: rgba(236,235,254,0.12);
-      font-weight: 800;
+      background:rgba(236,235,254,.15);
+      font-weight:800;
     }
 
+    /* ===== TOTAL PILLS ===== */
     .totals{
       display:flex;
-      gap: 14px;
-      flex-wrap: wrap;
-      margin-top: 14px;
-      justify-content: flex-end;
+      justify-content:flex-end;
+      gap:14px;
+      margin-top:16px;
     }
 
-    /* ✅ Pills משודרגים */
     .pill{
-      background: rgba(236,235,254,0.14);
-      border: 1px solid rgba(236,235,254,0.35);
-      border-radius: 999px;
-      padding: 12px 18px;
-      font-size: 16px;
-      color: #ffffff;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+      background:var(--panel2);
+      border:1px solid rgba(236,235,254,.4);
+      border-radius:999px;
+      padding:12px 18px;
+      display:flex;
+      gap:10px;
+      align-items:center;
+      font-size:16px;
     }
 
-    .pill span{
-      color: rgba(255,255,255,0.75);
-      font-size: 14px;
-    }
+    .pill span{color:var(--muted)}
 
-    .pill.total-amount{
-      background: linear-gradient(
-        180deg,
-        rgba(236,235,254,0.25),
-        rgba(236,235,254,0.12)
-      );
-      border-color: rgba(236,235,254,0.60);
+    .pill.amount{
+      background:linear-gradient(180deg,rgba(236,235,254,.3),rgba(236,235,254,.12));
     }
 
     .pill.negative{
-      background: rgba(255,90,90,0.18);
-      border-color: rgba(255,90,90,0.60);
+      background:rgba(255,90,90,.2);
+      border-color:rgba(255,90,90,.6);
     }
 
     footer{
+      border-top:1px solid var(--line);
+      padding-top:14px;
+      font-size:13px;
+      color:var(--muted);
       display:flex;
-      justify-content: space-between;
-      align-items:center;
-      color: var(--muted);
-      font-size: 13px;
-      gap: 10px;
-      border-top: 1px solid var(--line);
-      padding-top: 14px;
+      justify-content:space-between;
     }
 
-    .src{
-      direction:ltr;
-      text-align:left;
-      opacity: 0.9;
-    }
-
-    /* התאמה למסכים קטנים (אופציונלי) */
-    @media (max-width: 1100px){
-      .grid{ grid-template-columns: 1fr; }
-      h1{ font-size: 28px; }
+    @media (max-width:1100px){
+      .grid{grid-template-columns:1fr}
+      h1{font-size:28px}
     }
   </style>
 </head>
 
 <body>
-  <div class="wrap">
+<div class="wrap">
 
-    <header>
-      <div class="title">
-        <h1>דוח עסקאות לפי סוג</h1>
-        <div class="badge">GROW • NOC</div>
-      </div>
-
-      <div class="meta">
-        <div id="updatedAt">עודכן: —</div>
-        <div id="status" class="status">טוען נתונים…</div>
-      </div>
-    </header>
-
-    <main class="grid">
-      <!-- Month -->
-      <section class="card">
-        <h2>
-          <span>(MTD) מהחודש</span>
-          <span class="sub">Start of month</span>
-        </h2>
-
-        <table>
-          <thead>
-            <tr>
-              <th class="type">סוג</th>
-              <th class="count">כמות</th>
-              <th class="amount">סליקה</th>
-            </tr>
-          </thead>
-          <tbody id="monthBody">
-            <tr><td class="type">אין נתונים</td><td class="count">—</td><td class="amount">—</td></tr>
-          </tbody>
-        </table>
-
-        <div class="totals">
-          <div class="pill">
-            <span>סה״כ כמות</span>
-            <b id="monthTotalCount">—</b>
-          </div>
-          <div class="pill total-amount" id="monthAmountPill">
-            <span>סה״כ סכום</span>
-            <b id="monthTotalAmount">—</b>
-          </div>
-        </div>
-      </section>
-
-      <!-- Today -->
-      <section class="card">
-        <h2>
-          <span>(Today) מהיום</span>
-          <span class="sub">Start of day</span>
-        </h2>
-
-        <table>
-          <thead>
-            <tr>
-              <th class="type">סוג</th>
-              <th class="count">כמות</th>
-              <th class="amount">סליקה</th>
-            </tr>
-          </thead>
-          <tbody id="todayBody">
-            <tr><td class="type">אין נתונים</td><td class="count">—</td><td class="amount">—</td></tr>
-          </tbody>
-        </table>
-
-        <div class="totals">
-          <div class="pill">
-            <span>סה״כ כמות</span>
-            <b id="todayTotalCount">—</b>
-          </div>
-          <div class="pill total-amount" id="todayAmountPill">
-            <span>סה״כ סכום</span>
-            <b id="todayTotalAmount">—</b>
-          </div>
-        </div>
-      </section>
-    </main>
-
-    <footer>
-      <div>רענון אוטומטי: <b id="refreshEvery">5</b> דקות</div>
-      <div class="src">מקור נתונים: <b>/latest.json</b></div>
-    </footer>
+<header>
+  <div class="title">
+    <h1>דוח עסקאות לפי סוג</h1>
+    <div class="badge">GROW • NOC</div>
   </div>
+  <div class="meta">
+    <div id="updatedAt">עודכן: —</div>
+    <div id="status" class="status">טוען…</div>
+  </div>
+</header>
 
-  <script>
-    // ✅ הגדרה: כל כמה זמן לרענן (דקות)
-    const REFRESH_MINUTES = 5;
-    document.getElementById("refreshEvery").textContent = String(REFRESH_MINUTES);
+<main class="grid">
 
-    // ✅ מקור הנתונים — אצלך בתוך dashboard-site
-    const DATA_URL = "/latest.json";
+  <!-- MONTH -->
+  <section class="card">
+    <h2><span>(MTD) מהחודש</span><span class="sub">Start of month</span></h2>
+    <table>
+      <thead>
+        <tr>
+          <th class="type">סוג</th>
+          <th class="count">כמות</th>
+          <th class="amount">סליקה</th>
+        </tr>
+      </thead>
+      <tbody id="monthBody"></tbody>
+    </table>
+    <div class="totals">
+      <div class="pill"><span>סה״כ כמות</span><b id="monthCount">—</b></div>
+      <div class="pill amount" id="monthAmountPill"><span>סה״כ סכום</span><b id="monthAmount">—</b></div>
+    </div>
+  </section>
 
-    const fmtInt = (n) => (typeof n === "number" ? n.toLocaleString("en-US") : "—");
-    const fmtMoney = (n) => (typeof n === "number" ? n.toLocaleString("en-US") : "—");
+  <!-- TODAY -->
+  <section class="card">
+    <h2><span>(Today) מהיום</span><span class="sub">Start of day</span></h2>
+    <table>
+      <thead>
+        <tr>
+          <th class="type">סוג</th>
+          <th class="count">כמות</th>
+          <th class="amount">סליקה</th>
+        </tr>
+      </thead>
+      <tbody id="todayBody"></tbody>
+    </table>
+    <div class="totals">
+      <div class="pill"><span>סה״כ כמות</span><b id="todayCount">—</b></div>
+      <div class="pill amount" id="todayAmountPill"><span>סה״כ סכום</span><b id="todayAmount">—</b></div>
+    </div>
+  </section>
 
-    function setStatusOk(msg){
-      const el = document.getElementById("status");
-      el.className = "status ok";
-      el.textContent = "✅ " + msg;
+</main>
+
+<footer>
+  <div>רענון אוטומטי כל 5 דקות</div>
+  <div>/latest.json</div>
+</footer>
+
+</div>
+
+<script>
+  const URL = "/latest.json";
+  const REFRESH_MIN = 5;
+
+  const fmt = n => typeof n === "number" ? n.toLocaleString("he-IL") : "—";
+
+  function render(rows, bodyId){
+    const tbody = document.getElementById(bodyId);
+    tbody.innerHTML = rows.map(r=>{
+      const total = r.type.includes("סה");
+      return `<tr class="${total?'total-row':''}">
+        <td class="type">${r.type}</td>
+        <td class="count">${fmt(r.count)}</td>
+        <td class="amount">${fmt(r.amount)}</td>
+      </tr>`;
+    }).join("");
+  }
+
+  function sum(rows, key){
+    return rows.reduce((s,r)=>s+(typeof r[key]==="number"?r[key]:0),0);
+  }
+
+  async function load(){
+    try{
+      const res = await fetch(URL+"?v="+Date.now(),{cache:"no-store"});
+      const data = await res.json();
+
+      document.getElementById("updatedAt").innerText = "עודכן: " + data.updatedAt;
+
+      const t = data.transactions.today;
+      const m = data.transactions.month;
+
+      render(t,"todayBody");
+      render(m,"monthBody");
+
+      const tc = sum(t,"count"), ta = sum(t,"amount");
+      const mc = sum(m,"count"), ma = sum(m,"amount");
+
+      todayCount.innerText = fmt(tc);
+      todayAmount.innerText = fmt(ta);
+      monthCount.innerText = fmt(mc);
+      monthAmount.innerText = fmt(ma);
+
+      todayAmountPill.classList.toggle("negative", ta<0);
+      monthAmountPill.classList.toggle("negative", ma<0);
+
+      status.innerText = "עודכן בהצלחה";
+      status.className = "status ok";
+    }catch(e){
+      status.innerText = "שגיאה בטעינה";
+      status.className = "status err";
     }
+  }
 
-    function setStatusErr(msg){
-      const el = document.getElementById("status");
-      el.className = "status err";
-      el.textContent = "❌ " + msg;
-    }
+  load();
+  setInterval(load, REFRESH_MIN*60*1000);
+</script>
 
-    function renderTable(tbodyId, rows){
-      const tbody = document.getElementById(tbodyId);
-      if (!Array.isArray(rows) || rows.length === 0){
-        tbody.innerHTML = `<tr><td class="type">אין נתונים</td><td class="count">—</td><td class="amount">—</td></tr>`;
-        return;
-      }
-
-      tbody.innerHTML = rows.map(r => {
-        const isTotal = (r && typeof r.type === "string" && r.type.includes("סה\"כ"));
-        const cls = isTotal ? "total-row" : "";
-        return `
-          <tr class="${cls}">
-            <td class="type">${(r && r.type) ? r.type : "—"}</td>
-            <td class="count">${fmtInt(r && r.count)}</td>
-            <td class="amount">${fmtMoney(r && r.amount)}</td>
-          </tr>
-        `;
-      }).join("");
-    }
-
-    function sumField(rows, field){
-      if (!Array.isArray(rows)) return 0;
-      return rows.reduce((acc, r) => acc + (typeof r?.[field] === "number" ? r[field] : 0), 0);
-    }
-
-    function updatePillNegative(pillId, value){
-      const pill = document.getElementById(pillId);
-      if (!pill) return;
-      pill.classList.toggle("negative", typeof value === "number" && value < 0);
-    }
-
-    async function load(){
-      try{
-        // cache-bust כדי לא להיתקע על CDN/Cache
-        const url = DATA_URL + "?v=" + Date.now();
-        const res = await fetch(url, { cache: "no-store" });
-        if (!res.ok) throw new Error("HTTP " + res.status);
-
-        const data = await res.json();
-
-        // updatedAt
-        document.getElementById("updatedAt").textContent = "עודכן: " + (data.updatedAt ?? "—");
-
-        // tables
-        const todayRows = data?.transactions?.today ?? [];
-        const monthRows = data?.transactions?.month ?? [];
-
-        renderTable("todayBody", todayRows);
-        renderTable("monthBody", monthRows);
-
-        // totals
-        const todayTotalCount = sumField(todayRows, "count");
-        const todayTotalAmount = sumField(todayRows, "amount");
-
-        const monthTotalCount = sumField(monthRows, "count");
-        const monthTotalAmount = sumField(monthRows, "amount");
-
-        document.getElementById("todayTotalCount").textContent = fmtInt(todayTotalCount);
-        document.getElementById("todayTotalAmount").textContent = fmtMoney(todayTotalAmount);
-        updatePillNegative("todayAmountPill", todayTotalAmount);
-
-        document.getElementById("monthTotalCount").textContent = fmtInt(monthTotalCount);
-        document.getElementById("monthTotalAmount").textContent = fmtMoney(monthTotalAmount);
-        updatePillNegative("monthAmountPill", monthTotalAmount);
-
-        setStatusOk("עודכן בהצלחה");
-      } catch (e){
-        console.error(e);
-        setStatusErr("שגיאה בטעינת נתונים: " + (e?.message || e));
-      }
-    }
-
-    // טעינה ראשונה + רענון כל X דקות
-    load();
-    setInterval(load, REFRESH_MINUTES * 60 * 1000);
-  </script>
 </body>
 </html>
