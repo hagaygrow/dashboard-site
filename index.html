@@ -3,155 +3,42 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Grow NOC — Transactions</title>
+  <title>Grow • NOC — דוח עסקאות לפי סוג</title>
 
-  <style>
-    :root{
-      --bg: #121065;
-      --panel: rgba(255,255,255,0.06);
-      --panel2: rgba(255,255,255,0.10);
-      --text: #ffffff;
-      --muted: rgba(255,255,255,0.7);
-      --line: rgba(255,255,255,0.14);
-      --good: #3cffb0;
-      --warn: #ffd84d;
-      --bad:  #ff6b6b;
-      --accent: #ECEBFE;
-    }
-    *{ box-sizing: border-box; }
-    body{
-      margin:0;
-      background:
-        radial-gradient(1100px 600px at 80% 10%, rgba(236,235,254,0.12), transparent 60%),
-        radial-gradient(900px 600px at 20% 90%, rgba(236,235,254,0.08), transparent 55%),
-        var(--bg);
-      color: var(--text);
-      font-family: system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
-    }
-    .wrap{
-      padding: 28px;
-      min-height: 100vh;
-      display: grid;
-      grid-template-rows: auto 1fr auto;
-      gap: 18px;
-    }
-    header{
-      display:flex;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 16px;
-    }
-    .title{ display:flex; align-items:center; gap: 14px; }
-    .badge{
-      font-weight: 700;
-      letter-spacing: .3px;
-      color: #121065;
-      background: var(--accent);
-      border-radius: 999px;
-      padding: 6px 14px;
-      font-size: 14px;
-      white-space: nowrap;
-    }
-    h1{ margin:0; font-size: 36px; line-height: 1.1; }
-    .meta{ color: var(--muted); font-size: 14px; text-align:left; }
-    .grid{ display:grid; grid-template-columns: 1fr 1fr; gap: 18px; }
-    .card{
-      background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.04));
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      padding: 18px 20px 20px;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 10px 30px rgba(0,0,0,0.25);
-    }
-    .card h2{
-      margin:0 0 12px 0;
-      font-size: 22px;
-      color: var(--text);
-      display:flex;
-      justify-content: space-between;
-      align-items:center;
-      gap: 10px;
-    }
-    .sub{ color: var(--muted); font-size: 13px; }
-    table{
-      width:100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-      font-size: 18px;
-    }
-    th, td{
-      padding: 12px 10px;
-      border-bottom: 1px solid var(--line);
-      white-space: nowrap;
-    }
-    th{ color: rgba(255,255,255,0.75); font-size: 14px; font-weight: 600; }
-    td.type{ width: 50%; }
-    td.count, th.count{ width: 120px; text-align:left; }
-    td.amount, th.amount{ text-align:left; }
-    tr:last-child td{ border-bottom: none; }
-    .totals{ display:flex; gap: 14px; flex-wrap: wrap; margin-top: 14px; }
-    .pill{
-      background: var(--panel2);
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      padding: 10px 16px;
-      font-size: 16px;
-      color: var(--text);
-    }
-    .pill span{ color: var(--muted); margin-inline-end: 8px; }
-    footer{
-      display:flex;
-      justify-content: space-between;
-      align-items:center;
-      color: var(--muted);
-      font-size: 13px;
-      gap: 10px;
-      border-top: 1px solid var(--line);
-      padding-top: 14px;
-    }
-    .status.ok{ color: var(--good); }
-    .status.err{ color: var(--bad); }
-    pre#debug{
-      margin:0;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid var(--line);
-      border-radius: 14px;
-      padding: 12px;
-      color: rgba(255,255,255,0.8);
-      white-space: pre-wrap;
-    }
-  </style>
+  <!-- השאר כאן את ה-STYLE שלך כמו ששלחת -->
 </head>
 
 <body>
   <div class="wrap">
     <header>
       <div class="title">
-        <div class="badge">GROW • NOC</div>
+        <span class="badge">GROW • NOC</span>
         <h1>דוח עסקאות לפי סוג</h1>
       </div>
       <div class="meta">
-        <div>עודכן: <span id="updatedAt">טוען…</span></div>
-        <div class="status" id="status">טוען נתונים…</div>
+        <div id="updatedAt">עודכן: —</div>
+        <div id="status" class="status">טוען נתונים…</div>
       </div>
     </header>
 
     <main class="grid">
+      <!-- TODAY -->
       <section class="card">
         <h2>
           <span>מהיום (Today)</span>
-          <span class="sub">Start of day → עכשיו</span>
+          <span class="sub">Start of day</span>
         </h2>
 
         <table>
           <thead>
             <tr>
-              <th>סוג</th>
+              <th class="type">סוג</th>
               <th class="count">כמות</th>
-              <th class="amount">סכום</th>
+              <th class="amount">סליקה</th>
             </tr>
           </thead>
           <tbody id="todayRows">
-            <tr><td colspan="3">טוען…</td></tr>
+            <tr><td colspan="3" class="sub">אין נתונים</td></tr>
           </tbody>
         </table>
 
@@ -161,110 +48,127 @@
         </div>
       </section>
 
+      <!-- MONTH -->
       <section class="card">
         <h2>
           <span>מהחודש (MTD)</span>
-          <span class="sub">Start of month → עכשיו</span>
+          <span class="sub">Start of month</span>
         </h2>
 
         <table>
           <thead>
             <tr>
-              <th>סוג</th>
+              <th class="type">סוג</th>
               <th class="count">כמות</th>
-              <th class="amount">סכום</th>
+              <th class="amount">סליקה</th>
             </tr>
           </thead>
-          <tbody id="mtdRows">
-            <tr><td colspan="3">טוען…</td></tr>
+          <tbody id="monthRows">
+            <tr><td colspan="3" class="sub">אין נתונים</td></tr>
           </tbody>
         </table>
 
         <div class="totals">
-          <div class="pill"><span>סה״כ כמות:</span><b id="mtdTotalCount">—</b></div>
-          <div class="pill"><span>סה״כ סכום:</span><b id="mtdTotalAmount">—</b></div>
+          <div class="pill"><span>סה״כ כמות:</span><b id="monthTotalCount">—</b></div>
+          <div class="pill"><span>סה״כ סכום:</span><b id="monthTotalAmount">—</b></div>
         </div>
       </section>
     </main>
 
     <footer>
-      <div>מקור נתונים: <span id="dataUrl">/latest.json</span></div>
-      <div>ריענון אוטומטי: <span id="refreshEvery">5</span> דקות</div>
+      <div>ריענון אוטומטי: <span id="refreshEvery">60</span> שניות</div>
+      <div class="sub">מקור נתונים: <code>latest.json</code></div>
     </footer>
-
-    <pre id="debug" style="display:none"></pre>
   </div>
 
   <script>
-    // ✅ שינוי כאן: כל כמה דקות לרענן
-    const REFRESH_MINUTES = 5;
-    document.getElementById("refreshEvery").textContent = String(REFRESH_MINUTES);
-
-    // ✅ שינוי כאן: מאיפה למשוך נתונים (יחסי = מהדומיין שלך, דרך Cloudflare)
-    const DATA_URL = "/latest.json";
-    document.getElementById("dataUrl").textContent = DATA_URL;
-
-    function fmtMoney(n){
-      if (n === null || n === undefined || n === "") return "—";
-      const num = Number(n);
-      if (Number.isNaN(num)) return String(n);
-      return num.toLocaleString("en-US");
-    }
-    function setStatus(ok, msg){
-      const el = document.getElementById("status");
-      el.className = "status " + (ok ? "ok" : "err");
-      el.textContent = msg;
+    // ✅ הגנה על Host (שלא יציג אם זה לא הדומיין שלך)
+    if (location.hostname !== "dashboard.3144.info") {
+      document.body.innerHTML = "";
+      throw new Error("Blocked: invalid host");
     }
 
-    function renderRows(tbodyId, rows){
+    const REFRESH_SECONDS = 60;
+    document.getElementById("refreshEvery").textContent = REFRESH_SECONDS;
+
+    function fmtNumber(n) {
+      if (n === null || n === undefined || Number.isNaN(n)) return "—";
+      return new Intl.NumberFormat("he-IL").format(n);
+    }
+
+    function fmtCurrency(n) {
+      if (n === null || n === undefined || Number.isNaN(n)) return "—";
+      // אם אתה רוצה ש"ח:
+      return new Intl.NumberFormat("he-IL").format(n);
+    }
+
+    function renderRows(rows, tbodyId, totalCountId, totalAmountId) {
       const tbody = document.getElementById(tbodyId);
-      if (!Array.isArray(rows) || rows.length === 0){
-        tbody.innerHTML = `<tr><td colspan="3">אין נתונים</td></tr>`;
+
+      if (!Array.isArray(rows) || rows.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="3" class="sub">אין נתונים</td></tr>`;
+        document.getElementById(totalCountId).textContent = "—";
+        document.getElementById(totalAmountId).textContent = "—";
         return;
       }
-      tbody.innerHTML = rows.map(r => `
-        <tr>
-          <td class="type">${r.type ?? "—"}</td>
-          <td class="count">${fmtMoney(r.count)}</td>
-          <td class="amount">${fmtMoney(r.amount)}</td>
-        </tr>
-      `).join("");
+
+      let totalCount = 0;
+      let totalAmount = 0;
+
+      tbody.innerHTML = rows.map(r => {
+        const type = r?.type ?? "";
+        const count = Number(r?.count ?? 0);
+        const amount = Number(r?.amount ?? 0);
+
+        totalCount += count;
+        totalAmount += amount;
+
+        return `
+          <tr>
+            <td class="type">${type}</td>
+            <td class="count">${fmtNumber(count)}</td>
+            <td class="amount">${fmtCurrency(amount)}</td>
+          </tr>
+        `;
+      }).join("");
+
+      document.getElementById(totalCountId).textContent = fmtNumber(totalCount);
+      document.getElementById(totalAmountId).textContent = fmtCurrency(totalAmount);
     }
 
-    async function load(){
-      try{
-        setStatus(true, "טוען נתונים…");
-        const res = await fetch(DATA_URL + "?v=" + Date.now(), { cache: "no-store" });
+    async function load() {
+      const statusEl = document.getElementById("status");
+      statusEl.textContent = "טוען נתונים…";
+      statusEl.className = "status";
+
+      try {
+        const url = "/latest.json?v=" + Date.now();
+        const res = await fetch(url, { cache: "no-store" });
         if (!res.ok) throw new Error("HTTP " + res.status);
 
         const data = await res.json();
 
-        // ציפייה לפורמט כזה:
-        // {
-        //   "updatedAt": "2025-12-15 12:00",
-        //   "today": {"rows":[{"type":"...","count":1,"amount":100}], "totalCount":1, "totalAmount":100},
-        //   "mtd":   {"rows":[...], "totalCount":..., "totalAmount":...}
-        // }
+        document.getElementById("updatedAt").textContent =
+          "עודכן: " + (data.updatedAt ?? "—");
 
-        document.getElementById("updatedAt").textContent = data.updatedAt ?? "—";
+        const today = data?.transactions?.today ?? [];
+        const month = data?.transactions?.month ?? [];
 
-        renderRows("todayRows", data.today?.rows);
-        document.getElementById("todayTotalCount").textContent = fmtMoney(data.today?.totalCount);
-        document.getElementById("todayTotalAmount").textContent = fmtMoney(data.today?.totalAmount);
+        renderRows(today, "todayRows", "todayTotalCount", "todayTotalAmount");
+        renderRows(month, "monthRows", "monthTotalCount", "monthTotalAmount");
 
-        renderRows("mtdRows", data.mtd?.rows);
-        document.getElementById("mtdTotalCount").textContent = fmtMoney(data.mtd?.totalCount);
-        document.getElementById("mtdTotalAmount").textContent = fmtMoney(data.mtd?.totalAmount);
-
-        setStatus(true, "עודכן בהצלחה ✅");
-      }catch(e){
+        statusEl.textContent = "עודכן בהצלחה ✅";
+        statusEl.className = "status ok";
+      } catch (e) {
         console.error(e);
-        setStatus(false, "שגיאה בטעינה ❌ " + (e.message || e));
+        const statusEl = document.getElementById("status");
+        statusEl.textContent = "שגיאה בטעינת נתונים ❌ (" + e.message + ")";
+        statusEl.className = "status err";
       }
     }
 
     load();
-    setInterval(load, REFRESH_MINUTES * 60 * 1000);
+    setInterval(load, REFRESH_SECONDS * 1000);
   </script>
 </body>
 </html>
