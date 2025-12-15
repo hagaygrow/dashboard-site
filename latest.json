@@ -1,6 +1,27 @@
 {
-  "updatedAt": "2025-12-15 19:13",
-  "revenue": 55555,
-  "activeUsers": 111,
-  "conversionRate": 30
+  "updatedAt": "2025-12-16 14:30",
+
+  "transactions": {
+    "today": [
+      { "type": "רגילה", "count": 120, "amount": 58210 },
+      { "type": "תשלומים", "count": 38, "amount": 91300 },
+      { "type": "הוראת קבע", "count": 14, "amount": 22100 },
+      { "type": "ניכיון", "count": 7, "amount": 8900 },
+      { "type": "זיכוי", "count": 9, "amount": -4100 },
+      { "type": "הכחשה עסקה", "count": 3, "amount": -1800 },
+      { "type": "העברה בנקאית", "count": 22, "amount": 34000 },
+      { "type": "סה\"כ יומי", "count": 213, "amount": 150610 }
+    ],
+
+    "month": [
+      { "type": "רגילה", "count": 3120, "amount": 1458210 },
+      { "type": "תשלומים", "count": 940, "amount": 2419300 },
+      { "type": "הוראת קבע", "count": 410, "amount": 612000 },
+      { "type": "ניכיון", "count": 98, "amount": 122400 },
+      { "type": "זיכוי", "count": 132, "amount": -58100 },
+      { "type": "הכחשה עסקה", "count": 27, "amount": -14300 },
+      { "type": "העברה בנקאית", "count": 510, "amount": 980000 },
+      { "type": "סה\"כ חודשי", "count": 5237, "amount": 5525210 }
+    ]
+  }
 }
