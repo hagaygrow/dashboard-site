@@ -1,175 +1,270 @@
-<style>
-  :root{
-    /* 🎯 Brand / NOC colors */
-    --bg: #121065;
-    --panel: rgba(255,255,255,0.06);
-    --panel2: rgba(255,255,255,0.10);
-    --text: #ffffff;
-    --muted: rgba(255,255,255,0.7);
-    --line: rgba(255,255,255,0.14);
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Grow NOC — Transactions</title>
 
-    /* Status colors */
-    --good: #3cffb0;
-    --warn: #ffd84d;
-    --bad:  #ff6b6b;
+  <style>
+    :root{
+      --bg: #121065;
+      --panel: rgba(255,255,255,0.06);
+      --panel2: rgba(255,255,255,0.10);
+      --text: #ffffff;
+      --muted: rgba(255,255,255,0.7);
+      --line: rgba(255,255,255,0.14);
+      --good: #3cffb0;
+      --warn: #ffd84d;
+      --bad:  #ff6b6b;
+      --accent: #ECEBFE;
+    }
+    *{ box-sizing: border-box; }
+    body{
+      margin:0;
+      background:
+        radial-gradient(1100px 600px at 80% 10%, rgba(236,235,254,0.12), transparent 60%),
+        radial-gradient(900px 600px at 20% 90%, rgba(236,235,254,0.08), transparent 55%),
+        var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+    }
+    .wrap{
+      padding: 28px;
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 18px;
+    }
+    header{
+      display:flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .title{ display:flex; align-items:center; gap: 14px; }
+    .badge{
+      font-weight: 700;
+      letter-spacing: .3px;
+      color: #121065;
+      background: var(--accent);
+      border-radius: 999px;
+      padding: 6px 14px;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+    h1{ margin:0; font-size: 36px; line-height: 1.1; }
+    .meta{ color: var(--muted); font-size: 14px; text-align:left; }
+    .grid{ display:grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.04));
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px 20px 20px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08), 0 10px 30px rgba(0,0,0,0.25);
+    }
+    .card h2{
+      margin:0 0 12px 0;
+      font-size: 22px;
+      color: var(--text);
+      display:flex;
+      justify-content: space-between;
+      align-items:center;
+      gap: 10px;
+    }
+    .sub{ color: var(--muted); font-size: 13px; }
+    table{
+      width:100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 18px;
+    }
+    th, td{
+      padding: 12px 10px;
+      border-bottom: 1px solid var(--line);
+      white-space: nowrap;
+    }
+    th{ color: rgba(255,255,255,0.75); font-size: 14px; font-weight: 600; }
+    td.type{ width: 50%; }
+    td.count, th.count{ width: 120px; text-align:left; }
+    td.amount, th.amount{ text-align:left; }
+    tr:last-child td{ border-bottom: none; }
+    .totals{ display:flex; gap: 14px; flex-wrap: wrap; margin-top: 14px; }
+    .pill{
+      background: var(--panel2);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 10px 16px;
+      font-size: 16px;
+      color: var(--text);
+    }
+    .pill span{ color: var(--muted); margin-inline-end: 8px; }
+    footer{
+      display:flex;
+      justify-content: space-between;
+      align-items:center;
+      color: var(--muted);
+      font-size: 13px;
+      gap: 10px;
+      border-top: 1px solid var(--line);
+      padding-top: 14px;
+    }
+    .status.ok{ color: var(--good); }
+    .status.err{ color: var(--bad); }
+    pre#debug{
+      margin:0;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
+      color: rgba(255,255,255,0.8);
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
 
-    /* Accent (Grow light) */
-    --accent: #ECEBFE;
-  }
+<body>
+  <div class="wrap">
+    <header>
+      <div class="title">
+        <div class="badge">GROW • NOC</div>
+        <h1>דוח עסקאות לפי סוג</h1>
+      </div>
+      <div class="meta">
+        <div>עודכן: <span id="updatedAt">טוען…</span></div>
+        <div class="status" id="status">טוען נתונים…</div>
+      </div>
+    </header>
 
-  *{ box-sizing: border-box; }
+    <main class="grid">
+      <section class="card">
+        <h2>
+          <span>מהיום (Today)</span>
+          <span class="sub">Start of day → עכשיו</span>
+        </h2>
 
-  body{
-    margin:0;
-    background:
-      radial-gradient(1100px 600px at 80% 10%, rgba(236,235,254,0.12), transparent 60%),
-      radial-gradient(900px 600px at 20% 90%, rgba(236,235,254,0.08), transparent 55%),
-      var(--bg);
-    color: var(--text);
-    font-family: system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
-  }
+        <table>
+          <thead>
+            <tr>
+              <th>סוג</th>
+              <th class="count">כמות</th>
+              <th class="amount">סכום</th>
+            </tr>
+          </thead>
+          <tbody id="todayRows">
+            <tr><td colspan="3">טוען…</td></tr>
+          </tbody>
+        </table>
 
-  .wrap{
-    padding: 28px;
-    min-height: 100vh;
-    display: grid;
-    grid-template-rows: auto 1fr auto;
-    gap: 18px;
-  }
+        <div class="totals">
+          <div class="pill"><span>סה״כ כמות:</span><b id="todayTotalCount">—</b></div>
+          <div class="pill"><span>סה״כ סכום:</span><b id="todayTotalAmount">—</b></div>
+        </div>
+      </section>
 
-  header{
-    display:flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 16px;
-  }
+      <section class="card">
+        <h2>
+          <span>מהחודש (MTD)</span>
+          <span class="sub">Start of month → עכשיו</span>
+        </h2>
 
-  .title{
-    display:flex;
-    align-items:center;
-    gap: 14px;
-  }
+        <table>
+          <thead>
+            <tr>
+              <th>סוג</th>
+              <th class="count">כמות</th>
+              <th class="amount">סכום</th>
+            </tr>
+          </thead>
+          <tbody id="mtdRows">
+            <tr><td colspan="3">טוען…</td></tr>
+          </tbody>
+        </table>
 
-  .badge{
-    font-weight: 700;
-    letter-spacing: .3px;
-    color: #121065;
-    background: var(--accent);
-    border-radius: 999px;
-    padding: 6px 14px;
-    font-size: 14px;
-  }
+        <div class="totals">
+          <div class="pill"><span>סה״כ כמות:</span><b id="mtdTotalCount">—</b></div>
+          <div class="pill"><span>סה״כ סכום:</span><b id="mtdTotalAmount">—</b></div>
+        </div>
+      </section>
+    </main>
 
-  h1{
-    margin:0;
-    font-size: 36px;
-    line-height: 1.1;
-  }
+    <footer>
+      <div>מקור נתונים: <span id="dataUrl">/latest.json</span></div>
+      <div>ריענון אוטומטי: <span id="refreshEvery">5</span> דקות</div>
+    </footer>
 
-  .meta{
-    color: var(--muted);
-    font-size: 14px;
-    text-align:left;
-  }
+    <pre id="debug" style="display:none"></pre>
+  </div>
 
-  .grid{
-    display:grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 18px;
-  }
+  <script>
+    // ✅ שינוי כאן: כל כמה דקות לרענן
+    const REFRESH_MINUTES = 5;
+    document.getElementById("refreshEvery").textContent = String(REFRESH_MINUTES);
 
-  .card{
-    background: linear-gradient(
-      180deg,
-      rgba(255,255,255,0.10),
-      rgba(255,255,255,0.04)
-    );
-    border: 1px solid var(--line);
-    border-radius: 18px;
-    padding: 18px 20px 20px;
-    box-shadow:
-      inset 0 1px 0 rgba(255,255,255,0.08),
-      0 10px 30px rgba(0,0,0,0.25);
-  }
+    // ✅ שינוי כאן: מאיפה למשוך נתונים (יחסי = מהדומיין שלך, דרך Cloudflare)
+    const DATA_URL = "/latest.json";
+    document.getElementById("dataUrl").textContent = DATA_URL;
 
-  .card h2{
-    margin:0 0 12px 0;
-    font-size: 22px;
-    color: var(--text);
-    display:flex;
-    justify-content: space-between;
-    align-items:center;
-  }
+    function fmtMoney(n){
+      if (n === null || n === undefined || n === "") return "—";
+      const num = Number(n);
+      if (Number.isNaN(num)) return String(n);
+      return num.toLocaleString("en-US");
+    }
+    function setStatus(ok, msg){
+      const el = document.getElementById("status");
+      el.className = "status " + (ok ? "ok" : "err");
+      el.textContent = msg;
+    }
 
-  .sub{
-    color: var(--muted);
-    font-size: 13px;
-  }
+    function renderRows(tbodyId, rows){
+      const tbody = document.getElementById(tbodyId);
+      if (!Array.isArray(rows) || rows.length === 0){
+        tbody.innerHTML = `<tr><td colspan="3">אין נתונים</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = rows.map(r => `
+        <tr>
+          <td class="type">${r.type ?? "—"}</td>
+          <td class="count">${fmtMoney(r.count)}</td>
+          <td class="amount">${fmtMoney(r.amount)}</td>
+        </tr>
+      `).join("");
+    }
 
-  table{
-    width:100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-    font-size: 18px; /* קריא מרחוק */
-  }
+    async function load(){
+      try{
+        setStatus(true, "טוען נתונים…");
+        const res = await fetch(DATA_URL + "?v=" + Date.now(), { cache: "no-store" });
+        if (!res.ok) throw new Error("HTTP " + res.status);
 
-  th, td{
-    padding: 12px 10px;
-    border-bottom: 1px solid var(--line);
-    white-space: nowrap;
-  }
+        const data = await res.json();
 
-  th{
-    color: rgba(255,255,255,0.75);
-    font-size: 14px;
-    font-weight: 600;
-  }
+        // ציפייה לפורמט כזה:
+        // {
+        //   "updatedAt": "2025-12-15 12:00",
+        //   "today": {"rows":[{"type":"...","count":1,"amount":100}], "totalCount":1, "totalAmount":100},
+        //   "mtd":   {"rows":[...], "totalCount":..., "totalAmount":...}
+        // }
 
-  td.type{ width: 50%; }
-  td.count, th.count{ width: 120px; text-align:left; }
-  td.amount, th.amount{ text-align:left; }
+        document.getElementById("updatedAt").textContent = data.updatedAt ?? "—";
 
-  tr:last-child td{
-    border-bottom: none;
-  }
+        renderRows("todayRows", data.today?.rows);
+        document.getElementById("todayTotalCount").textContent = fmtMoney(data.today?.totalCount);
+        document.getElementById("todayTotalAmount").textContent = fmtMoney(data.today?.totalAmount);
 
-  .row-hi{
-    background: rgba(236,235,254,0.12);
-    border-radius: 10px;
-  }
+        renderRows("mtdRows", data.mtd?.rows);
+        document.getElementById("mtdTotalCount").textContent = fmtMoney(data.mtd?.totalCount);
+        document.getElementById("mtdTotalAmount").textContent = fmtMoney(data.mtd?.totalAmount);
 
-  .totals{
-    display:flex;
-    gap: 14px;
-    flex-wrap: wrap;
-    margin-top: 14px;
-  }
+        setStatus(true, "עודכן בהצלחה ✅");
+      }catch(e){
+        console.error(e);
+        setStatus(false, "שגיאה בטעינה ❌ " + (e.message || e));
+      }
+    }
 
-  .pill{
-    background: var(--panel2);
-    border: 1px solid var(--line);
-    border-radius: 999px;
-    padding: 10px 16px;
-    font-size: 16px;
-    color: var(--text);
-  }
-
-  .pill span{
-    color: var(--muted);
-    margin-inline-end: 8px;
-  }
-
-  footer{
-    display:flex;
-    justify-content: space-between;
-    align-items:center;
-    color: var(--muted);
-    font-size: 13px;
-    gap: 10px;
-    border-top: 1px solid var(--line);
-    padding-top: 14px;
-  }
-
-  .status.ok{ color: var(--good); }
-  .status.err{ color: var(--bad); }
-</style>
+    load();
+    setInterval(load, REFRESH_MINUTES * 60 * 1000);
+  </script>
+</body>
+</html>
