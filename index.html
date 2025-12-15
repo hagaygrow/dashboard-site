@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dashboard Test</title>
+</head>
+<body>
+  <h1>דשבורד בדיקה</h1>
+
+  <p>הכנסות: <span id="revenue">טוען...</span></p>
+  <p>משתמשים פעילים: <span id="users">טוען...</span></p>
+  <p>יחס המרה: <span id="conversion">טוען...</span>%</p>
+  <p>עודכן לאחרונה: <span id="updated">טוען...</span></p>
+
+  <pre id="status" style="white-space: pre-wrap; background:#f6f6f6; padding:10px;"></pre>
+
+  <script>
+    const URL = "https://raw.githubusercontent.com/hagaygrow/dashboard-data/main/latest.json";
+
+    async function load() {
+      const statusEl = document.getElementById("status");
+      statusEl.textContent = "טוען נתונים מ:\n" + URL + "\n\n";
+
+      try {
+        const res = await fetch(URL + "?v=" + Date.now(), { cache: "no-store" });
+        statusEl.textContent += "HTTP Status: " + res.status + "\n";
+
+        const text = await res.text();
+
+        // נסה לפרסר JSON
+        let data;
+        try {
+          data = JSON.parse(text);
+        } catch (e) {
+          statusEl.textContent += "\n❌ התגובה אינה JSON תקין.\nהתחלה של התגובה:\n" + text.slice(0, 400);
+          return;
+        }
+
+        document.getElementById("revenue").innerText = data.revenue ?? "(חסר revenue)";
+        document.getElementById("users").innerText = data.activeUsers ?? "(חסר activeUsers)";
+        document.getElementById("conversion").innerText = data.conversionRate ?? "(חסר conversionRate)";
+        document.getElementById("updated").innerText = data.updatedAt ?? "(חסר updatedAt)";
+
+        statusEl.textContent += "\n✅ עודכן בהצלחה";
+      } catch (e) {
+        statusEl.textContent += "\n❌ שגיאת רשת / חסימה:\n" + e.message;
+        console.error(e);
+      }
+    }
+
+    load();
+  </script>
+</body>
+</html>
