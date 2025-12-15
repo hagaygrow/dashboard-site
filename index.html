@@ -123,24 +123,50 @@
       font-size: 13px;
     }
 
-    table{
-      width:100%;
-      border-collapse: collapse;
-      margin-top: 12px;
-      font-size: 18px; /* קריא מרחוק */
-    }
+   table{
+  width:100%;
+  border-collapse: collapse;
+  margin-top: 14px;
+  font-size: 18px;
+}
+
 
     /* ✅ Header חזק וברור */
-    thead tr{
-      background: rgba(236,235,254,0.08);
-    }
-    thead th{
-      color: #ECEBFE;
-      font-weight: 800;
-      font-size: 14px;
-      border-bottom: 1px solid rgba(236,235,254,0.35);
-      letter-spacing: 0.2px;
-    }
+   thead tr{
+  background: rgba(236,235,254,0.10);
+}
+thead th{
+  /* 🔥 Bigger + clearer headers */
+  font-size: 18px;
+  font-weight: 900;
+  color: #FFFFFF;
+  padding: 16px 10px;
+  border-bottom: 2px solid rgba(236,235,254,0.55);
+  letter-spacing: 0.3px;
+  text-transform: none;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.35);
+}
+    /* עוזר להפריד ויזואלית בין header ל-data */
+tbody td{
+  padding: 14px 10px;
+}
+
+/* ✅ יישור הכותרות כמו התוכן */
+th.type, td.type{
+  text-align: right;
+  padding-right: 18px;
+  width: 48%;
+}
+
+th.count, td.count{
+  text-align: left;
+  width: 20%;
+}
+
+th.amount, td.amount{
+  text-align: left;
+  width: 32%;
+}
 
     th, td{
       padding: 12px 10px;
