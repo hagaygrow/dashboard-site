@@ -5,6 +5,11 @@
   <title>Dashboard Test</title>
 </head>
 <body>
+   <script>
+    if (location.hostname !== "dashboard.3144.info") {
+      document.body.innerHTML = "";
+    }
+  </script>
   <h1>דשבורד בדיקה</h1>
 
   <p>הכנסות: <span id="revenue">טוען...</span></p>
