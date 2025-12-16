@@ -10,15 +10,15 @@
       --bg:#121065;
       --panel:rgba(255,255,255,.06);
       --panel2:rgba(255,255,255,.12);
-      --text:#fff;
-      --muted:rgba(255,255,255,.7);
+      --text:#ffffff;
+      --muted:rgba(255,255,255,.65);
       --line:rgba(255,255,255,.14);
       --accent:#ECEBFE;
       --good:#3cffb0;
       --bad:#ff6b6b;
     }
 
-    *{box-sizing:border-box}
+    *{ box-sizing:border-box }
 
     body{
       margin:0;
@@ -50,10 +50,7 @@
       gap:14px;
     }
 
-    h1{
-      margin:0;
-      font-size:36px;
-    }
+    h1{ margin:0; font-size:36px }
 
     .badge{
       background:var(--accent);
@@ -73,8 +70,8 @@
       gap:6px;
     }
 
-    .status.ok{color:var(--good)}
-    .status.err{color:var(--bad)}
+    .status.ok{ color:var(--good) }
+    .status.err{ color:var(--bad) }
 
     .grid{
       display:grid;
@@ -97,7 +94,7 @@
       font-size:22px;
     }
 
-    .sub{color:var(--muted);font-size:13px}
+    .sub{ color:var(--muted); font-size:13px }
 
     /* ===== TABLE ===== */
     table{
@@ -107,9 +104,7 @@
       font-size:18px;
     }
 
-    thead tr{
-      background:rgba(236,235,254,.12);
-    }
+    thead tr{ background:rgba(236,235,254,.12) }
 
     thead th{
       font-size:20px;
@@ -124,45 +119,65 @@
       border-bottom:1px solid var(--line);
     }
 
-    tbody tr:last-child td{border-bottom:none}
+    tbody tr:last-child td{ border-bottom:none }
 
-    th.type,td.type{width:48%;text-align:right;padding-right:18px}
-    th.count,td.count{width:20%;text-align:left}
-    th.amount,td.amount{width:32%;text-align:left}
+    th.type,td.type{ width:48%; text-align:right; padding-right:18px }
+    th.count,td.count{ width:20%; text-align:left }
+    th.amount,td.amount{ width:32%; text-align:left }
 
     tr.total-row{
       background:rgba(236,235,254,.15);
       font-weight:800;
     }
 
-    /* ===== TOTAL PILLS ===== */
+    /* ===== TOTAL KPI ===== */
     .totals{
       display:flex;
-      justify-content:flex-end;
-      gap:14px;
-      margin-top:16px;
+      justify-content:center;
+      gap:16px;
+      margin-top:18px;
     }
 
     .pill{
-      background:var(--panel2);
-      border:1px solid rgba(236,235,254,.4);
-      border-radius:999px;
-      padding:12px 18px;
+      background:rgba(236,235,254,.18);
+      border:1px solid rgba(236,235,254,.45);
+      border-radius:14px;
+      padding:14px 22px;
+      min-width:160px;
       display:flex;
-      gap:10px;
+      flex-direction:column;
       align-items:center;
-      font-size:16px;
+      gap:4px;
     }
 
-    .pill span{color:var(--muted)}
+    .pill span{
+      font-size:13px;
+      color:var(--muted);
+      letter-spacing:.3px;
+    }
+
+    .pill b{
+      font-size:22px;
+      font-weight:900;
+      color:#fff;
+    }
 
     .pill.amount{
-      background:linear-gradient(180deg,rgba(236,235,254,.3),rgba(236,235,254,.12));
+      background:linear-gradient(
+        180deg,
+        rgba(236,235,254,.35),
+        rgba(236,235,254,.18)
+      );
+      border-color:rgba(236,235,254,.7);
     }
 
     .pill.negative{
-      background:rgba(255,90,90,.2);
-      border-color:rgba(255,90,90,.6);
+      background:linear-gradient(
+        180deg,
+        rgba(255,90,90,.35),
+        rgba(255,90,90,.18)
+      );
+      border-color:rgba(255,90,90,.7);
     }
 
     footer{
@@ -175,8 +190,8 @@
     }
 
     @media (max-width:1100px){
-      .grid{grid-template-columns:1fr}
-      h1{font-size:28px}
+      .grid{ grid-template-columns:1fr }
+      h1{ font-size:28px }
     }
   </style>
 </head>
@@ -197,7 +212,7 @@
 
 <main class="grid">
 
-  <!-- MONTH -->
+  <!-- MTD -->
   <section class="card">
     <h2><span>(MTD) מהחודש</span><span class="sub">Start of month</span></h2>
     <table>
@@ -245,16 +260,16 @@
 </div>
 
 <script>
-  const URL = "/latest.json";
-  const REFRESH_MIN = 5;
+  const URL="/latest.json";
+  const REFRESH_MIN=5;
 
-  const fmt = n => typeof n === "number" ? n.toLocaleString("he-IL") : "—";
+  const fmt=n=>typeof n==="number"?n.toLocaleString("he-IL"):"—";
 
-  function render(rows, bodyId){
-    const tbody = document.getElementById(bodyId);
-    tbody.innerHTML = rows.map(r=>{
-      const total = r.type.includes("סה");
-      return `<tr class="${total?'total-row':''}">
+  function render(rows, id){
+    const tbody=document.getElementById(id);
+    tbody.innerHTML=rows.map(r=>{
+      const isTotal=r.type.includes("סה");
+      return `<tr class="${isTotal?"total-row":""}">
         <td class="type">${r.type}</td>
         <td class="count">${fmt(r.count)}</td>
         <td class="amount">${fmt(r.amount)}</td>
@@ -262,44 +277,42 @@
     }).join("");
   }
 
-  function sum(rows, key){
-    return rows.reduce((s,r)=>s+(typeof r[key]==="number"?r[key]:0),0);
-  }
+  const sum=(rows,k)=>rows.reduce((s,r)=>s+(typeof r[k]==="number"?r[k]:0),0);
 
   async function load(){
     try{
-      const res = await fetch(URL+"?v="+Date.now(),{cache:"no-store"});
-      const data = await res.json();
+      const res=await fetch(URL+"?v="+Date.now(),{cache:"no-store"});
+      const data=await res.json();
 
-      document.getElementById("updatedAt").innerText = "עודכן: " + data.updatedAt;
+      updatedAt.innerText="עודכן: "+data.updatedAt;
 
-      const t = data.transactions.today;
-      const m = data.transactions.month;
+      const t=data.transactions.today;
+      const m=data.transactions.month;
 
       render(t,"todayBody");
       render(m,"monthBody");
 
-      const tc = sum(t,"count"), ta = sum(t,"amount");
-      const mc = sum(m,"count"), ma = sum(m,"amount");
+      const tc=sum(t,"count"), ta=sum(t,"amount");
+      const mc=sum(m,"count"), ma=sum(m,"amount");
 
-      todayCount.innerText = fmt(tc);
-      todayAmount.innerText = fmt(ta);
-      monthCount.innerText = fmt(mc);
-      monthAmount.innerText = fmt(ma);
+      todayCount.innerText=fmt(tc);
+      todayAmount.innerText=fmt(ta);
+      monthCount.innerText=fmt(mc);
+      monthAmount.innerText=fmt(ma);
 
-      todayAmountPill.classList.toggle("negative", ta<0);
-      monthAmountPill.classList.toggle("negative", ma<0);
+      todayAmountPill.classList.toggle("negative",ta<0);
+      monthAmountPill.classList.toggle("negative",ma<0);
 
-      status.innerText = "עודכן בהצלחה";
-      status.className = "status ok";
-    }catch(e){
-      status.innerText = "שגיאה בטעינה";
-      status.className = "status err";
+      status.innerText="עודכן בהצלחה";
+      status.className="status ok";
+    }catch{
+      status.innerText="שגיאה בטעינה";
+      status.className="status err";
     }
   }
 
   load();
-  setInterval(load, REFRESH_MIN*60*1000);
+  setInterval(load,REFRESH_MIN*60*1000);
 </script>
 
 </body>
