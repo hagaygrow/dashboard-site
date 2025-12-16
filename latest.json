@@ -3,7 +3,7 @@
 
   "transactions": {
     "today": [
-      { "type": "רגילה", "count": 120, "amount": 58210 },
+      { "type": "רגילה", "count": 120, "amount": 111111 },
       { "type": "תשלומים", "count": 38, "amount": 91300 },
       { "type": "הוראת קבע", "count": 14, "amount": 22100 },
       { "type": "ניכיון", "count": 7, "amount": 8900 },
@@ -25,3 +25,4 @@
     ]
   }
 }
+
